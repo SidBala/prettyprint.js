@@ -20,24 +20,83 @@
 		<script>
 		
 			var randomObject = {
-				life: 42.01,
-				r1: new RegExp('\\$..?[0-5]+'),
-				r2: /foo(.+?)$/,
-				funky: function(foo, bib, bab) {
-					if (foo !== bib) {
-                        console.log('Error: ', '...');               
-                    }
-                    return RegExp(bab).exec(foo);
-				},
-				foo: {
-					prop: [1,2,3,{a:1}],
-					prop2: [
-						new Date(),
-						"som\"ething else"
-					]
-				},
-				domThing: document.body.firstChild
-			};
+    $ref: "#/definitions/NuxStarted",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    definitions: {
+        EventCategory: {
+            description:
+                "Log Event type category. `event` represents a log event used for data-science",
+            enum: ["event"],
+            type: "string",
+        },
+        NuxFlowType: {
+            description:
+                "nux_flow_type:\nThis field indicates the type of user that is going through the new user experience (NUX).\nThe field can be used to derive the domain type, user type and whether or not they are a guest.\nThese are the values for domain creators- workspace_creator and org_creator\nThese are the values for invited users- workspace_internal_invite, workspace_external_invite, org_internal_invite, org_external_invite and org_share_link\nThese are the values for autojoins- (optional) any additional details about the field",
+            enum: [
+                "org_creator",
+                "org_autojoin",
+                "org_invite",
+                "org_invite_guest",
+                "org_share_link",
+                "workspace_creator",
+                "workspace_invite",
+                "workspace_invite_guest",
+                "personal_projects_invite",
+            ],
+            type: "string",
+        },
+        NuxStarted: {
+            properties: {
+                action: {
+                    enum: ["NuxStarted"],
+                    type: "string",
+                },
+                category: {
+                    $ref: "#/definitions/EventCategory",
+                },
+                current_domain: {
+                    $ref: "#/definitions/ObjectId%3C%22Domain%22%3E",
+                },
+                domain: {
+                    $ref: "#/definitions/ObjectId%3C%22Domain%22%3E",
+                },
+                key: {
+                    enum: ["NuxStarted@Nux"],
+                    type: "string",
+                },
+                location: {
+                    enum: ["Nux"],
+                    type: "string",
+                },
+                nux_flow_type: {
+                    $ref: "#/definitions/NuxFlowType",
+                },
+                user: {
+                    $ref: "#/definitions/ObjectId%3C%22User%22%3E",
+                },
+            },
+            required: [
+                "action",
+                "category",
+                "current_domain",
+                "domain",
+                "key",
+                "location",
+                "nux_flow_type",
+                "user",
+            ],
+            type: "object",
+        },
+        'ObjectId<"Domain">': {
+            description: "Integer representing the global_id of the referenced object",
+            type: "number",
+        },
+        'ObjectId<"User">': {
+            description: "Integer representing the global_id of the referenced object",
+            type: "number",
+        },
+    },
+};
 			
 			randomObject.circularRef = randomObject;
 			
